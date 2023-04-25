@@ -23,4 +23,22 @@ export class UserAdminRepository {
       }).save()
     ).toObject();
   }
+
+  async findOneByEmail(email: string): Promise<UserAdminDocument> {
+    try {
+      return (
+        await this.userAdminModel.findOne({ email: email.toLowerCase() }).exec()
+      ).toObject();
+    } catch {
+      return null;
+    }
+  }
+
+  async findOneById(id: string): Promise<UserAdminDocument> {
+    try {
+      return (await this.userAdminModel.findById(id).exec()).toObject();
+    } catch {
+      return null;
+    }
+  }
 }

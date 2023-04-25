@@ -1,19 +1,34 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 
-import { isProduction } from './core/utils/is-production';
-import { UserAdminService } from './features/users-admin/user-admin.service';
+import { isProduction } from '@core/utils/is-production';
+import { Public } from '@core/public';
+import { UserAdminService } from '@users-admin/user-admin.service';
+import { LoginRequestDto, LoginResponseDto } from '@auth/auth.dtos';
+import { AuthService } from '@auth/auth.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly userAdminService: UserAdminService) {
+  constructor(
+    private authService: AuthService,
+    private readonly userAdminService: UserAdminService,
+  ) {
     if (!isProduction()) {
       this.setUpDefaultUser();
     }
   }
 
+  @Public()
+  @Post('/login')
+  login(
+    @Body() { email, password }: LoginRequestDto,
+  ): Promise<LoginResponseDto> {
+    return this.authService.login(email, password);
+  }
+
+  @Public()
   @Get()
-  getHello(): string {
-    return 'Hello World';
+  welcome(): string {
+    return 'Welcome to API Users';
   }
 
   private setUpDefaultUser() {

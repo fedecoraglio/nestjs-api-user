@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@users-admin/*": ["src/features/users-admin/*"],
+      "@auth/*": ["src/features/auth/*"],
+      "@core/*": ["src/core/*"]
+    }
+  }
+}

@@ -1,9 +1,19 @@
-import { Module } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  MiddlewareConsumer,
+  Module,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { UserAdminModule } from './features/users-admin/user-admin.module';
-
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { JwtModule } from '@nestjs/jwt';
+
+import { AuthService } from '@auth/auth.service';
+import { JwtStrategy } from '@auth/jwt-strategy';
+import { JwtAuthGuard } from '@auth/jwt-auth-guard';
+import { AuthValidateMiddleware } from '@auth/auth-validate.middleware';
 
 @Module({
   imports: [
@@ -19,9 +29,31 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       }),
       inject: [ConfigService],
     }),
+    JwtModule.registerAsync({
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('jwt_secret'),
+        signOptions: { expiresIn: configService.get<string>('jwt_expires') },
+      }),
+      inject: [ConfigService],
+    }),
     UserAdminModule,
   ],
   controllers: [AppController],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    AuthService,
+    JwtStrategy,
+  ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AuthValidateMiddleware).forRoutes('*');
+  }
+}
