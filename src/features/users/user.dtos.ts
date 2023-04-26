@@ -19,8 +19,13 @@ export class UserDto {
   name: string;
   @ApiProperty()
   lastName: string;
+  @ApiProperty()
+  profileFileName?: string;
+  @ApiProperty()
+  profileUrl?: string;
 
-  constructor(user: UserDocument) {
+  constructor(user: UserDocument, profileUrl = null) {
     Object.assign(this, user);
+    this.profileUrl = profileUrl;
   }
 }

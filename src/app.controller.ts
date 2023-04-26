@@ -25,12 +25,6 @@ export class AppController {
     return this.authService.login(email, password);
   }
 
-  @Public()
-  @Get()
-  welcome(): string {
-    return 'Welcome to API Users';
-  }
-
   private setUpDefaultUser() {
     this.userAdminService.createDefaultUser();
   }
