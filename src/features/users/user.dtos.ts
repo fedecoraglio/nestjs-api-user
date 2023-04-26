@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDefined } from 'class-validator';
+import { IsDefined, IsOptional } from 'class-validator';
 
 import { ExposeObjectId } from '@core/decorators/expose-object-id';
 import { UserDocument } from './user.schema';
@@ -17,6 +17,9 @@ export class UserRequestDto {
   @ApiProperty()
   @IsDefined()
   lastName: string;
+  @ApiProperty()
+  @IsOptional()
+  address: string;
 }
 
 export class UserDto {

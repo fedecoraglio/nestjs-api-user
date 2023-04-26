@@ -18,6 +18,11 @@ export class User {
     type: MongooseSchema.Types.String,
     required: false,
   })
+  address: string;
+  @Prop({
+    type: MongooseSchema.Types.String,
+    required: false,
+  })
   profileFileName: string;
 }
 

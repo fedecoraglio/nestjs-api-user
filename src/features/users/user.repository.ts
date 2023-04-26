@@ -31,6 +31,7 @@ export class UserRepository {
       throw { code: ErrorCode.UserNotFound, message: 'User not found' };
     }
     userDto.name = userDto.name ? userDto.name : user.name;
+    userDto.address = userDto.address ? userDto.address : user.address;
     userDto.lastName = userDto.lastName ? userDto.lastName : user.lastName;
     userDto.profileFileName = userDto.profileFileName
       ? userDto.profileFileName

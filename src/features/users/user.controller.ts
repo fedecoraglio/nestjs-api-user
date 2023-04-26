@@ -33,7 +33,8 @@ export class UserController {
       type: 'object',
       properties: {
         name: { type: 'string' },
-        lastName: { type: 'integer' },
+        lastName: { type: 'string' },
+        address: { type: 'string' },
         profileFile: {
           type: 'string',
           format: 'binary',
@@ -56,7 +57,8 @@ export class UserController {
       type: 'object',
       properties: {
         name: { type: 'string' },
-        lastName: { type: 'integer' },
+        lastName: { type: 'string' },
+        address: { type: 'string' },
         profileFile: {
           type: 'string',
           format: 'binary',
