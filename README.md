@@ -31,11 +31,7 @@ it is necessary to hash and instance of mongodb and update the connection on db_
 $ npm run start
 ```
 
-You can access to swagger documentation like this:
-```
-http://localhost:3000/swagger
-```
-
+You can access to swagger documentation like this:http://localhost:3000/swagger
 
 ## Running the app using docker
 
@@ -53,39 +49,14 @@ full_user_path_profile_img= /app/
 docker-compose up -d --build
 ```
 
-```
-You have to access to this link
-```
-http://localhost:3001/swagger
-```
+You have to access to this link: http://localhost:3001/swagger
+
 The email and password to login are:
+
 ```
 email: "admin@test.com"
 password: "12345678"
 ```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
 
 ## License
 
