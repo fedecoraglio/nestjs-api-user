@@ -41,7 +41,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
       imports: [UserConfigModule],
       useFactory: (userConfigService: UserConfigService) => ({
         secret: userConfigService.jwtSecret,
-        signOptions: { expiresIn: userConfigService.jwtSecret },
+        signOptions: { expiresIn: userConfigService.jwtExpires },
       }),
       inject: [UserConfigService],
     }),

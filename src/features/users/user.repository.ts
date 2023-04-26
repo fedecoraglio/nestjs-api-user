@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import { User, UserDocument } from './user.schema';
 import { UserRequestDto } from './user.dtos';
 import { PaginationOptions } from '@core/pagination-options/pagination-options';
+import { ErrorCode } from '@core/errors/error-code';
 
 export class UserRepository {
   private readonly logger = new Logger(UserRepository.name);
@@ -18,6 +19,31 @@ export class UserRepository {
   ): Promise<UserDocument> {
     this.logger.log(`Starting save user. ${JSON.stringify(userDto)}`);
     return (await new this.userModel(userDto).save())?.toObject();
+  }
+
+  async findAndUpdate(
+    id: string,
+    userDto: UserRequestDto & { profileFileName?: string },
+  ): Promise<UserDocument> {
+    this.logger.log(`Starting update user.`);
+    const user = (await this.userModel.findById(id))?.toObject();
+    if (!user) {
+      throw { code: ErrorCode.UserNotFound, message: 'User not found' };
+    }
+    userDto.name = userDto.name ? userDto.name : user.name;
+    userDto.lastName = userDto.lastName ? userDto.lastName : user.lastName;
+    userDto.profileFileName = userDto.profileFileName
+      ? userDto.profileFileName
+      : user.profileFileName;
+    return (
+      await this.userModel.findByIdAndUpdate(
+        id,
+        { ...userDto },
+        {
+          new: true,
+        },
+      )
+    )?.toObject();
   }
 
   async getById(id: string): Promise<UserDocument> {

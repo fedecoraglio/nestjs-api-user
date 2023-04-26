@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { instanceToPlain } from 'class-transformer';
 
 import { UserRepository } from '@users/user.repository';
@@ -7,7 +7,8 @@ import { UserProfileService } from '@users/user-profile.service';
 import { UserDocument } from '@users/user.schema';
 import { UserConfigService } from '@core/config/user-config.service';
 import { PaginationOptions } from '@core/pagination-options/pagination-options';
-import { PAGINATION_DEFAULT_LIMIT } from '../../core/utils/constant';
+import { PAGINATION_DEFAULT_LIMIT } from '@core/utils/constant';
+import { ErrorCode } from '@core/errors/error-code';
 
 @Injectable()
 export class UserService {
@@ -36,7 +37,45 @@ export class UserService {
       userDto = this.createUserDto(userDocument);
     } catch (err) {
       this.logger.error(err);
-      throw err;
+      throw new HttpException(
+        {
+          code: ErrorCode.UserErrorSaving,
+          message: err.message ?? 'Error during user saving process',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return userDto;
+  }
+
+  async update(
+    id: string,
+    dto: UserRequestDto,
+    profileFile: Express.Multer.File,
+  ): Promise<UserDto> {
+    let userDto: UserDto = null;
+    try {
+      this.logger.log(`Starting update user. ${dto.name}`);
+      let profileFileName = null;
+      if (profileFile?.originalname) {
+        profileFileName = this.userProfileService.uploadFile(
+          profileFile.buffer,
+          profileFile.originalname,
+        );
+      }
+      const userDocument = await this.userRepository.findAndUpdate(id, {
+        ...dto,
+        profileFileName,
+      });
+      userDto = this.createUserDto(userDocument);
+    } catch (err) {
+      throw new HttpException(
+        {
+          code: err.code ?? ErrorCode.UserErrorUpdating,
+          message: err.message ?? 'Error during user updating process',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
     return userDto;
   }

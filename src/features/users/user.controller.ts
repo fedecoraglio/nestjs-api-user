@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Put,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -46,6 +47,30 @@ export class UserController {
     @UploadedFile() profileFile: Express.Multer.File,
   ): Promise<UserDto> {
     return await this.userService.save(userRequestDto, profileFile);
+  }
+
+  @Put(':id')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string' },
+        lastName: { type: 'integer' },
+        profileFile: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  @UseInterceptors(FileInterceptor('profileFile'))
+  async updateUser(
+    @Param('id') id: string,
+    @Body() userRequestDto: UserRequestDto,
+    @UploadedFile() profileFile: Express.Multer.File,
+  ): Promise<UserDto> {
+    return await this.userService.update(id, userRequestDto, profileFile);
   }
 
   @Get('/:id')
