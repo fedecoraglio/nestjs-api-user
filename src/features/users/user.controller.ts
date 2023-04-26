@@ -12,9 +12,13 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { UserService } from '@users/user.service';
-import { UserDto, UserRequestDto } from '@users/user.dtos';
-import { ApiBearerAuth, ApiBody, ApiConsumes } from '@nestjs/swagger';
-import { ErrorCode } from '../../core/errors/error-code';
+import { GetUserResponseDto, UserDto, UserRequestDto } from '@users/user.dtos';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiQuery } from '@nestjs/swagger';
+import { ErrorCode } from '@core/errors/error-code';
+import {
+  Pagination,
+  PaginationOptions,
+} from '@core/pagination-options/pagination-options';
 
 @ApiBearerAuth()
 @Controller('/users')
@@ -59,5 +63,18 @@ export class UserController {
     }
 
     return user;
+  }
+
+  @ApiQuery({
+    name: 'pageSize',
+    type: String,
+    required: false,
+  })
+  @ApiQuery({ name: 'page', type: String, required: false })
+  @Get()
+  async findAll(
+    @Pagination() paginationOptions: PaginationOptions,
+  ): Promise<GetUserResponseDto> {
+    return await this.userService.getAll(paginationOptions);
   }
 }

@@ -1,10 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { instanceToPlain } from 'class-transformer';
 
 import { UserRepository } from '@users/user.repository';
-import { UserDto, UserRequestDto } from '@users/user.dtos';
+import { GetUserResponseDto, UserDto, UserRequestDto } from '@users/user.dtos';
 import { UserProfileService } from '@users/user-profile.service';
+import { UserDocument } from '@users/user.schema';
 import { UserConfigService } from '@core/config/user-config.service';
-import { UserDocument } from './user.schema';
+import { PaginationOptions } from '@core/pagination-options/pagination-options';
+import { PAGINATION_DEFAULT_LIMIT } from '../../core/utils/constant';
 
 @Injectable()
 export class UserService {
@@ -40,6 +43,31 @@ export class UserService {
 
   async getById(id: string): Promise<UserDto> {
     return this.createUserDto(await this.userRepository.getById(id));
+  }
+
+  async getAll({
+    skip,
+    limit,
+  }: PaginationOptions): Promise<GetUserResponseDto> {
+    const resp = await this.userRepository.getAll({
+      skip: skip ?? 0,
+      limit: limit ?? PAGINATION_DEFAULT_LIMIT,
+    });
+    const { serverDomain, serveRootImage } = this.userConfigService;
+    return {
+      users: instanceToPlain(
+        resp.users.map(
+          (user) =>
+            new UserDto(
+              user,
+              user?.profileFileName
+                ? `${serverDomain}${serveRootImage}${user.profileFileName}`
+                : null,
+            ),
+        ),
+      ),
+      total: resp.total,
+    } as GetUserResponseDto;
   }
 
   private createUserDto(user: UserDocument): UserDto {

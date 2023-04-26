@@ -5,6 +5,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { ErrorCode } from '../errors/error-code';
+import { PAGINATION_DEFAULT_LIMIT } from '../utils/constant';
 
 export type PaginationOptions = Readonly<{
   skip: number;
@@ -19,7 +20,7 @@ export const Pagination = createParamDecorator(
     const pageSizeQuery = request?.query?.pageSize as string;
     const page = parseInt(pageQuery, 10);
     const pageSize = parseInt(pageSizeQuery, 10);
-    const limit = isNaN(pageSize) ? 1000 : pageSize;
+    const limit = isNaN(pageSize) ? PAGINATION_DEFAULT_LIMIT : pageSize;
 
     if (page <= 0 || limit <= 0) {
       throw new HttpException(

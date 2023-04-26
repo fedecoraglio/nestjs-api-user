@@ -4,6 +4,12 @@ import { IsDefined } from 'class-validator';
 import { ExposeObjectId } from '@core/decorators/expose-object-id';
 import { UserDocument } from './user.schema';
 
+export class GetUserResponseDto {
+  @ApiProperty()
+  users: UserDto[];
+  @ApiProperty()
+  total: number;
+}
 export class UserRequestDto {
   @ApiProperty()
   @IsDefined()

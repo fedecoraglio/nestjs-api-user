@@ -8,3 +8,4 @@ export const VALID_EXTENSION_LIST = [
 ];
 
 export const DEFAULT_EXTENSION_IMAGE = '.jpg';
+export const PAGINATION_DEFAULT_LIMIT = 10;
