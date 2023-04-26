@@ -3,6 +3,7 @@
     "baseUrl": ".",
     "paths": {
       "@users-admin/*": ["src/features/users-admin/*"],
+      "@users/*": ["src/features/users/*"],
       "@auth/*": ["src/features/auth/*"],
       "@core/*": ["src/core/*"]
     }

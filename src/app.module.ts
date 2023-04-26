@@ -14,6 +14,7 @@ import { AuthService } from '@auth/auth.service';
 import { JwtStrategy } from '@auth/jwt-strategy';
 import { JwtAuthGuard } from '@auth/jwt-auth-guard';
 import { AuthValidateMiddleware } from '@auth/auth-validate.middleware';
+import { UserModule } from '@users/user.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { AuthValidateMiddleware } from '@auth/auth-validate.middleware';
       inject: [ConfigService],
     }),
     UserAdminModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [
